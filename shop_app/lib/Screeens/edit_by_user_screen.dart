@@ -768,7 +768,8 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                           Container(
                             margin: const EdgeInsets.only(top: 15),
                             width: constraints.maxWidth - 50,
-                            child: Row(
+                            child: (MediaQuery.of(context).size.width > 375)
+                                ?Row(
                               children: [
                                 const Text(
                                   "Select Value Type:",
@@ -815,7 +816,54 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                                   ),
                                 ),
                               ],
-                            ),
+                            ):
+                                Column(
+                                  children: [
+                const Text(
+                "Select Value Type:",
+                  style: TextStyle(fontSize: 17),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                PopupMenuButton(
+                  onSelected: (filterOptions selectedValue) {
+                    if (selectedValue == filterOptions.list) {
+                      setState(() {
+                        _selectedtype = 0;
+                      });
+                    }
+                    if (selectedValue == filterOptions.map) {
+                      setState(() {
+                        _selectedtype = 1;
+                      });
+                    }
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      const PopupMenuItem(
+                          value: filterOptions.list,
+                          child: Text("List")),
+                      const PopupMenuItem(
+                          value: filterOptions.map,
+                          child: Text("Map Colors")),
+                    ];
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        (_selectedtype == null)
+                            ? "Type : "
+                            : (_selectedtype == 0)
+                            ? "List"
+                            : "Map Colors",
+                        style: const TextStyle(fontSize: 17),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const Icon(Icons.arrow_drop_down_rounded)
+                    ],
+                  ),
+                ),
+              ],
+                                ),
                           ),
                         ],
                       ),
@@ -1375,8 +1423,8 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                                             color: idxClr,
                                             shape: BoxShape.circle,
                                           ),
-                                          height: constraints.maxHeight * 0.07,
-                                          width: constraints.maxHeight * 0.07,
+                                          height: min(constraints.maxWidth * 0.08,50),
+                                          width: min(constraints.maxWidth * 0.08,50),
                                         ),
                                       ),
                                       IconButton(
