@@ -66,53 +66,6 @@ class ProductsProvider with ChangeNotifier {
   }
 
   List<Product> get items {
-    // var loadedData;
-    // getData().then((value) {
-    //   loadedData = [...value];
-    //   print("inside then method of getData in getter items\n\n");
-    //   loadedData.forEach((e) {
-    //     if (_items.indexWhere((element) => element.id == e['key']) != -1) {
-    //       print(
-    //           'true${_items.indexWhere((element) => element.id == e['key'])}');
-    //       print("ID : ${e['key']}");
-    //       print(e['details']);
-    //       print(e["title"]);
-    //       print(e['discount']);
-    //       print(e['imageURL']);
-    //       print(e['price']);
-    //       print(e['description']);
-    //       print(e['attributes']);
-    //     } else {
-    //       List<dynamic> details = [...e['details']];
-    //       print("false");
-    //       print("rating: ${e['rating']}\n"
-    //           "attributes: ${e["attributes"]}\n"
-    //           "id: ${e['key']}\n"
-    //           "title: ${e["title"]}\n"
-    //           "description: ${e["description"]}\n"
-    //           "price: ${e["price"]}\n"
-    //           "imageURL: ${e["imageURL"]}\n"
-    //           "isFavourite: ${e['isFavorite']}\n"
-    //           "details: $details\n"
-    //           "discount: ${e['discount']}\n");
-    //       var hereProduct = Product(
-    //         rating: e['rating'],
-    //         attributes: {...e["attributes"]},
-    //         id: e['key'],
-    //         title: e["title"],
-    //         description: e["description"],
-    //         price: e["price"],
-    //         imageURL: e["imageURL"],
-    //         isFavourite: e['isFavorite'],
-    //         details: [...details],
-    //         discount: e['discount'],
-    //       );
-    //       _items.add(hereProduct);
-    //     }
-    //   });
-    //   // return [..._items];
-    // });
-    // TODO: Implement returning with modified list of items
     return [..._items];
   }
 
