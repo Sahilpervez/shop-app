@@ -5,6 +5,7 @@ import 'package:shop_app/Model/providers/orders.dart';
 import 'package:shop_app/Screeens/cart_screen.dart';
 import 'package:shop_app/Screeens/edit_by_user_screen.dart';
 import 'package:shop_app/Screeens/add_product_screen.dart';
+import 'package:shop_app/Screeens/login_screen.dart';
 import 'package:shop_app/Screeens/orders_screen.dart';
 import 'package:shop_app/Screeens/product_detail_screen.dart';
 import 'package:shop_app/Screeens/products_overview_screen.dart';
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
-        home: ProductsOverviewScreen(),
+        // home: ProductsOverviewScreen(),
+        home: LoginScreen(),
         routes: {
           ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
@@ -50,6 +52,8 @@ class MyApp extends StatelessWidget {
           UserProductsScreen.routeName : (ctx) => UserProductsScreen(),
           AddProductScreen.routeName : (ctx) => AddProductScreen(),
           EditByUserProductScreen.routeName : (ctx) => EditByUserProductScreen(),
+          LoginScreen.route: (ctx) => LoginScreen(),
+          ProductsOverviewScreen.route: (ctx) => ProductsOverviewScreen(),
         },
       ),
     );

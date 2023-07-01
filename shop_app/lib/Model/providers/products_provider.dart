@@ -12,7 +12,8 @@ class ProductsProvider with ChangeNotifier {
 
   var _isShowFavourites = false;
 
-  static const address = String.fromEnvironment("ADDRESS");
+  // static const address = String.fromEnvironment("ADDRESS");
+  static const address = "https://shopapp-9bf44-default-rtdb.firebaseio.com/";
 
   var TopBarItems = [
     "Sneakers",
