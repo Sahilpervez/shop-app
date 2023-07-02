@@ -12,6 +12,7 @@ import 'package:shop_app/Screeens/products_overview_screen.dart';
 import 'package:shop_app/Screeens/user_product_screen.dart';
 import './Model/providers/products_provider.dart';
 import 'Model/product.dart';
+import 'Model/providers/auth.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (ctx) => Auth()),
         ChangeNotifierProvider(
           create: (ctx) => ProductsProvider(),
           // value: ProductsProvider(),
@@ -36,25 +38,28 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Orders(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
+      child: Consumer<Auth>(
+        builder: (ctx, authData, _) => MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            useMaterial3: true,
+          ),
+          // home: ProductsOverviewScreen(),
+          home: (authData.isAuth) ? ProductsOverviewScreen() : const LoginScreen(),
+          routes: {
+            ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrdersScreen.namedRoute: (ctx) => OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            AddProductScreen.routeName: (ctx) => AddProductScreen(),
+            EditByUserProductScreen.routeName: (ctx) =>
+                EditByUserProductScreen(),
+            LoginScreen.route: (ctx) => LoginScreen(),
+            ProductsOverviewScreen.route: (ctx) => ProductsOverviewScreen(),
+          },
         ),
-        // home: ProductsOverviewScreen(),
-        home: LoginScreen(),
-        routes: {
-          ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.namedRoute: (ctx) => OrdersScreen( ),
-          UserProductsScreen.routeName : (ctx) => UserProductsScreen(),
-          AddProductScreen.routeName : (ctx) => AddProductScreen(),
-          EditByUserProductScreen.routeName : (ctx) => EditByUserProductScreen(),
-          LoginScreen.route: (ctx) => LoginScreen(),
-          ProductsOverviewScreen.route: (ctx) => ProductsOverviewScreen(),
-        },
       ),
     );
   }

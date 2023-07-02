@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/Screeens/products_overview_screen.dart';
+
+import '../Model/providers/auth.dart';
 
 enum AuthMode { signUp, login }
 
@@ -39,7 +45,26 @@ class _LoginScreenState extends State<LoginScreen> {
     _authDetails['password'] = "${passwordController.text}";
   }
 
-  void _submit() {
+  void _showErrorDialogue(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: const Text("An Error Occured!!"),
+            content: Text(message),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> _submit() async {
     if (!_formkey.currentState!.validate()) {
       return;
     }
@@ -47,10 +72,34 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.login) {
-      // Log user in
-    } else {
-      // Sign up user
+    try {
+      if (_authMode == AuthMode.login) {
+        // Log user in
+        await Provider.of<Auth>(context, listen: false)
+            .login(_authDetails["email"]!, _authDetails["password"]!);
+      } else {
+        // Sign up user
+        await Provider.of<Auth>(context, listen: false)
+            .signup(_authDetails['email']!, _authDetails['password']!);
+      }
+    } on HttpException catch (error) {
+      print(error);
+      var errorMessage = "Authentication failed";
+    } catch (error) {
+      var errorMessage = "Couldn't authenticate you, Try again later";
+      print("Inside catch block in login_screen $error");
+      if (error.toString().contains("EMAIL_EXISTS")) {
+        errorMessage = "Email address already in use";
+      } else if (error.toString().contains("INVALID_EMAIL")) {
+        errorMessage = "This is not a valid email address";
+      } else if (error.toString().contains("WEAK_PASSWORD")) {
+        errorMessage = "Password is too weak";
+      } else if (error.toString().contains("EMAIL_NOT_FOUND")) {
+        errorMessage = "Could not find a user with this email";
+      } else if (error.toString().contains("INVALID_PASSWORD")) {
+        errorMessage = "Invalid Password";
+      }
+      _showErrorDialogue(errorMessage);
     }
     setState(() {
       _isLoading = false;
@@ -87,14 +136,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         image: AssetImage("assets/LogoImage.png"),
                       ),
                       Text(
-                        (_authMode == AuthMode.login)?"Hello Again!" : "Welcome!",
+                        (_authMode == AuthMode.login)
+                            ? "Hello Again!"
+                            : "Welcome!",
                         style: const TextStyle(
                             fontSize: 40, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
                         height: 3,
                       ),
-                      if(_authMode == AuthMode.login)
+                      if (_authMode == AuthMode.login)
                         Text(
                           "Welcome Back, you've been missed!",
                           style: TextStyle(
@@ -102,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 20,
                           ),
                         ),
-                      if(_authMode == AuthMode.login)
+                      if (_authMode == AuthMode.login)
                         Container(
                             height: MediaQuery.of(context).size.height * 0.05),
                       Container(
@@ -156,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         margin: const EdgeInsets.symmetric(vertical: 7),
                         child: TextFormField(
-                          obscureText:  true,
+                          obscureText: true,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -194,13 +245,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           margin: const EdgeInsets.symmetric(vertical: 7),
                           child: TextFormField(
-                            obscureText:  true,
+                            obscureText: true,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Confirm Password";
-                              }else if(value! != passwordController.text){
+                              } else if (value! != passwordController.text) {
                                 return "Passwords do not match";
                               }
                               return null;
@@ -238,24 +289,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            _submit();
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: Center(
-                                child: (_isLoading)? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 4,
-                                ):Text(
-                                  (_authMode == AuthMode.login)
-                                      ? "Login"
-                                      : "Sign Up",
-                                  style: const TextStyle(
-                                      fontSize: 21,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
+                                child: (_isLoading)
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 4,
+                                      )
+                                    : Text(
+                                        (_authMode == AuthMode.login)
+                                            ? "Login"
+                                            : "Sign Up",
+                                        style: const TextStyle(
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
                               ),
                             ),
                           ),
