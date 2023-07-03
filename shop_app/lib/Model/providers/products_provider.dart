@@ -24,11 +24,12 @@ class ProductsProvider with ChangeNotifier {
   ];
 
   final String? token;
-  ProductsProvider(this._items,{this.token});
+  final String? userId;
+  ProductsProvider(this._items, {this.token, this.userId});
 
   Future<List> getData() async {
-    final response = await http.get(Uri.parse(
-        "$address/products_provider.json?auth=$token"));
+    final response = await http
+        .get(Uri.parse("$address/products_provider.json?auth=$token"));
     var responseData = json.decode(response.body);
     print(responseData);
     // will be used temporarily while creating the instance of raw maps
@@ -38,12 +39,19 @@ class ProductsProvider with ChangeNotifier {
     // over the responseData and converting each and every response to the corrosponding map.
     var listOfMaps = [];
     if (responseData != null) {
+      final fav = await http
+          .get(Uri.parse("$address/userFavourites/$userId.json?auth=$token"));
+      final favData = json.decode(fav.body);
       // iterate over each key value pair of response data json file using forEach() loop
       // and convert them into map that can be used to create instance of Product()
       responseData.forEach((key, value) {
         // store copy of all the body of data recieved from get request
         tempMap = {...responseData[key]};
         tempMap['key'] = key;
+        tempMap['isFavorite'] =
+            (favData != null && favData.containsKey(key) && favData[key] == true)
+                ? true
+                : false;
         Map<String, dynamic> attribute =
             tempMap['attributes'] as Map<String, dynamic>;
         Map<String, dynamic> tempColors = attribute.values.firstWhere(
@@ -81,9 +89,11 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  void ToggleFavourites(String id,bool favStatus){
-    final url = Uri.parse("$address/products_provider/$id.json?auth=$token",);
-    http.patch(url,body: json.encode({"isFavorite": favStatus}));
+  void ToggleFavourites(String id, bool favStatus) {
+    final url = Uri.parse(
+      "$address/products_provider/$id.json?auth=$token",
+    );
+    http.patch(url, body: json.encode({"isFavorite": favStatus}));
     notifyListeners();
   }
 
@@ -96,26 +106,31 @@ class ProductsProvider with ChangeNotifier {
       var loadedData;
       await getData().then((value) {
         loadedData = [...value];
-        print("inside then method of getData in getter items\n\n");
+        if (kDebugMode) {
+          print("inside then method of getData in getter items\n\n");
+        }
+        print(1);
         loadedData.forEach((e) {
           // if the Product is already present in the _items then just print the Product
           if (_items.indexWhere((element) => element.id == e['key']) != -1) {
-            print(
-                'true${_items.indexWhere((element) => element.id == e['key'])}');
-            print("ID : ${e['key']}");
-            print(e['details']);
-            print(e["title"]);
-            print(e['discount']);
-            print(e['imageURL']);
-            print(e['price']);
-            print(e['description']);
-            print(e['attributes']);
+            if (kDebugMode) {
+              print(
+                  'true${_items.indexWhere((element) => element.id == e['key'])}');
+              print("ID : ${e['key']}");
+              print(e['details']);
+              print(e["title"]);
+              print(e['discount']);
+              print(e['imageURL']);
+              print(e['price']);
+              print(e['description']);
+              print(e['attributes']);
+            }
           } else {
             // Else if the Product is not present in the _items then
             // print false and print the new to be added and convert them to
             // final instance of products
             List<dynamic> details = [];
-            if(e['details'] != null){
+            if (e['details'] != null) {
               details = [...e['details']];
             }
 
@@ -218,7 +233,7 @@ class ProductsProvider with ChangeNotifier {
             'rating': prdct.rating,
             'details': [...?prdct.details],
             'attributes': {...tempAttributes},
-            'isFavorite': prdct.isFavourite,
+            // 'isFavorite': prdct.isFavourite,
           },
         ),
       );
@@ -305,7 +320,7 @@ class ProductsProvider with ChangeNotifier {
             'rating': prdct.rating,
             'details': [...?prdct.details],
             'attributes': {...tempAttributes},
-            'isFavorite': prdct.isFavourite,
+            // 'isFavorite': prdct.isFavourite,
           },
         ),
       );
