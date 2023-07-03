@@ -37,7 +37,7 @@ class Orders with ChangeNotifier {
     final timeStamp = DateTime.now();
     try {
       final url = Uri.parse(
-        "https://shopapp-9bf44-default-rtdb.firebaseio.com/orders.json",
+        "https://shopapp-9bf44-default-rtdb.firebaseio.com/orders.json?auth=$token",
       );
       final response = await http.post(
         url,
@@ -71,10 +71,14 @@ class Orders with ChangeNotifier {
     }
   }
 
+  String? token;
+  Orders(this._orders,{this.token});
+
+
   Future<void> fetchAndSetOrders() async {
     try {
       final url = Uri.parse(
-        "$address/orders.json",
+        "$address/orders.json?auth=$token",
       );
       final response = await http.get(url);
       final responseData = json.decode(response.body);

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 
 import '../Model/product.dart';
+import '../Model/providers/auth.dart';
 import '../Model/providers/cart.dart';
 import '../Model/providers/products_provider.dart';
 
@@ -21,6 +22,7 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    final authData = Provider.of<Auth>(context);
     final id = ModalRoute.of(context)?.settings.arguments as String;
     final products = Provider.of<ProductsProvider>(context, listen: false);
     final cart = Provider.of<Cart>(context);
@@ -63,7 +65,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           IconButton(
             padding: EdgeInsets.symmetric(horizontal: 20),
             onPressed: () {
-              loadedProduct.toggleFavouriteStatus();
+              loadedProduct.toggleFavouriteStatus(authData.token,authData.userId);
               setState(() {
                 isFav = !isFav;
               });

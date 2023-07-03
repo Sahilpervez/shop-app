@@ -13,7 +13,7 @@ class Product with ChangeNotifier {
   final double? discount;
   final List<String>? details;
   final double rating;
-  final Map<String,dynamic> attributes;
+  final Map<String, dynamic> attributes;
   bool isFavourite;
   String? fireBaseId;
 
@@ -31,13 +31,15 @@ class Product with ChangeNotifier {
     this.isFavourite = false,
   });
   static const address = ProductsProvider.address;
-  void toggleFavouriteStatus(){
-    isFavourite = ! isFavourite;
-    final url = Uri.parse("$address/products_provider/$id.json",);
-    final response = http.patch(url,body: json.encode({"isFavorite": isFavourite}));
-    print(response);
+  Future<void> toggleFavouriteStatus(String? token, String? userId) async {
+    isFavourite = !isFavourite;
+    print("$address/userFavourites/$userId/$id.json?auth=$token");
+    final url = Uri.parse(
+      "$address/userFavourites/$userId/$id.json?auth=$token",
+    );
+    final response =
+        await http.put(url, body: json.encode(isFavourite));
+    print(response.body);
     notifyListeners();
   }
-
-
 }

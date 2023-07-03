@@ -23,9 +23,12 @@ class ProductsProvider with ChangeNotifier {
     "Pants",
   ];
 
+  final String? token;
+  ProductsProvider(this._items,{this.token});
+
   Future<List> getData() async {
     final response = await http.get(Uri.parse(
-        "$address/products_provider.json"));
+        "$address/products_provider.json?auth=$token"));
     var responseData = json.decode(response.body);
     print(responseData);
     // will be used temporarily while creating the instance of raw maps
@@ -79,7 +82,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void ToggleFavourites(String id,bool favStatus){
-    final url = Uri.parse("$address/products_provider/$id.json",);
+    final url = Uri.parse("$address/products_provider/$id.json?auth=$token",);
     http.patch(url,body: json.encode({"isFavorite": favStatus}));
     notifyListeners();
   }
@@ -87,7 +90,7 @@ class ProductsProvider with ChangeNotifier {
   // To fetch the data when loading the app
   Future<void> fetchAndSetProducts() async {
     final url = Uri.parse(
-      "$address/products_provider.json",
+      "$address/products_provider.json?auth=$token",
     );
     try {
       var loadedData;
@@ -200,7 +203,7 @@ class ProductsProvider with ChangeNotifier {
     tempAttributes.update(titleOfColors, (value) => mapOfColors);
     try {
       final url = Uri.parse(
-        "$address/products_provider.json",
+        "$address/products_provider.json?auth=$token",
       );
       final value = await http.post(
         url,
@@ -287,7 +290,7 @@ class ProductsProvider with ChangeNotifier {
     tempAttributes.update(titleOfColors, (value) => mapOfColors);
     try {
       final url = Uri.parse(
-        "$address/products_provider/${prdct.id}.json",
+        "$address/products_provider/${prdct.id}.json?auth=$token",
       );
       final value = await http.patch(
         url,
@@ -349,7 +352,7 @@ class ProductsProvider with ChangeNotifier {
     _items.removeAt(existingProductIdx);
     notifyListeners();
     final url = Uri.parse(
-      "$address/products_provider/$id.json",
+      "$address/products_provider/$id.json?auth=$token",
     );
     final response = await http.delete(url);
     if (response.statusCode >= 400) {

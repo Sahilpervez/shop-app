@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 import 'dart:math';
 import 'package:ionicons/ionicons.dart';
+import 'package:shop_app/Model/providers/auth.dart';
+import 'package:shop_app/Model/providers/products_provider.dart';
 import 'package:shop_app/Screeens/product_detail_screen.dart';
 
 import '../Model/product.dart';
@@ -14,6 +16,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authData = Provider.of<Auth>(context);
     final prdct = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context);
     return LayoutBuilder(
@@ -65,7 +68,7 @@ class ProductItem extends StatelessWidget {
                     Consumer<Product>(
                       builder: (ctx, prdct, child) => IconButton(
                         onPressed: () {
-                          prdct.toggleFavouriteStatus();
+                          prdct.toggleFavouriteStatus(authData.token,authData.userId);
                           print("favoutite");
                         },
                         icon: Icon(
