@@ -10,7 +10,7 @@ import '../product.dart';
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [];
 
-  var _isShowFavourites = false;
+  List<Product> _userItems = [];
 
   // static const address = String.fromEnvironment("ADDRESS");
   static const address = "https://shopapp-9bf44-default-rtdb.firebaseio.com/";
@@ -27,11 +27,19 @@ class ProductsProvider with ChangeNotifier {
   final String? userId;
   ProductsProvider(this._items, {this.token, this.userId});
 
-  Future<List> getData() async {
+  Future<List> getData([bool filterByUser = false]) async {
+    
+    String filterString =
+     filterByUser ?
+    'orderBy="creatorId"&equalTo="$userId"' :
+     "";
+    
     final response = await http
-        .get(Uri.parse("$address/products_provider.json?auth=$token"));
+        .get(Uri.parse('$address/products_provider.json?auth=$token&$filterString'));
     var responseData = json.decode(response.body);
-    print(responseData);
+    if (kDebugMode) {
+      print(responseData);
+    }
     // will be used temporarily while creating the instance of raw maps
     var tempMap = {};
     // listOfMaps stores the final list of all the maps that will be used to create
@@ -66,13 +74,17 @@ class ProductsProvider with ChangeNotifier {
           tempColors[key] = Color(int.parse(value));
         });
 
-        print(tempMap);
+        if (kDebugMode) {
+          print(tempMap);
+        }
         // add the raw map of product to the listOfMaps
         listOfMaps.add({...tempMap});
         tempMap.clear();
       });
     }
-    print(listOfMaps);
+    if (kDebugMode) {
+      print(listOfMaps);
+    }
     return listOfMaps;
     // print(responseData);
   }
@@ -80,6 +92,11 @@ class ProductsProvider with ChangeNotifier {
   List<Product> get items {
     return [..._items];
   }
+
+  List<Product> get userItems{
+    return [..._items.where((element) => element.creatorId == userId).toList()];
+  }
+
 
   List<Product> get FavItems {
     return _items.where((element) => element.isFavourite).toList();
@@ -98,18 +115,18 @@ class ProductsProvider with ChangeNotifier {
   }
 
   // To fetch the data when loading the app
-  Future<void> fetchAndSetProducts() async {
-    final url = Uri.parse(
-      "$address/products_provider.json?auth=$token",
-    );
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    _items = [];
     try {
-      var loadedData;
-      await getData().then((value) {
+      List<dynamic> loadedData;
+      await getData(filterByUser).then((value) {
         loadedData = [...value];
         if (kDebugMode) {
           print("inside then method of getData in getter items\n\n");
         }
-        print(1);
+        if (kDebugMode) {
+          print(1);
+        }
         loadedData.forEach((e) {
           // if the Product is already present in the _items then just print the Product
           if (_items.indexWhere((element) => element.id == e['key']) != -1) {
@@ -134,8 +151,10 @@ class ProductsProvider with ChangeNotifier {
               details = [...e['details']];
             }
 
-            print("false");
-            print("rating: ${e['rating']}\n"
+            
+            if (kDebugMode) {
+              print("false");
+              print("rating: ${e['rating']}\n"
                 "attributes: ${e["attributes"]}\n"
                 "id: ${e['key']}\n"
                 "title: ${e["title"]}\n"
@@ -145,6 +164,7 @@ class ProductsProvider with ChangeNotifier {
                 "isFavourite: ${e['isFavorite']}\n"
                 "details: $details\n"
                 "discount: ${e['discount']}\n");
+            }
 
             // Converting each raw map to Products
             var hereProduct = Product(
@@ -158,22 +178,27 @@ class ProductsProvider with ChangeNotifier {
               isFavourite: e['isFavorite'],
               details: [...details],
               discount: e['discount'],
+              creatorId: e['creatorId']
             );
             // if not present in the _items then add the finally created
             // instance of Product() to _items
             _items.add(hereProduct);
+          
           }
         });
       });
       notifyListeners();
     } catch (error) {
-      print(error);
-      throw (error);
+      if (kDebugMode) {
+        print(error);
+      }
+      rethrow;
     }
   }
 
   Future<void> addProducts(Product newPrdct) async {
-    print(
+    if (kDebugMode) {
+      print(
       ">>>>>>>>>  Product Before Adding"
       "id: ${newPrdct.id}\n"
       "title: ${newPrdct.title}\n"
@@ -185,6 +210,7 @@ class ProductsProvider with ChangeNotifier {
       "details: ${newPrdct.details}\n"
       "attributes: ${newPrdct.attributes}\n",
     );
+    }
     // var idx = _items.indexWhere((element) => element.id == newPrdct.id);
     final prdct = Product(
       rating: newPrdct.rating,
@@ -196,6 +222,7 @@ class ProductsProvider with ChangeNotifier {
       imageURL: newPrdct.imageURL,
       discount: newPrdct.discount,
       details: [...?newPrdct.details],
+      creatorId : userId!,
     );
 
     var titleOfColors = prdct.attributes.keys.firstWhere(
@@ -233,6 +260,7 @@ class ProductsProvider with ChangeNotifier {
             'rating': prdct.rating,
             'details': [...?prdct.details],
             'attributes': {...tempAttributes},
+            'creatorId' : userId ,
             // 'isFavorite': prdct.isFavourite,
           },
         ),
@@ -241,7 +269,7 @@ class ProductsProvider with ChangeNotifier {
         print(json.decode(value.body));
       }
       // prdct.id = json.decode(value.body)['name'];
-      final product_to_add = Product(
+      final productToAdd = Product(
         rating: newPrdct.rating,
         attributes: {...newPrdct.attributes},
         id: json.decode(value.body)['name'],
@@ -251,17 +279,21 @@ class ProductsProvider with ChangeNotifier {
         imageURL: newPrdct.imageURL,
         discount: newPrdct.discount,
         details: [...?newPrdct.details],
+        creatorId: userId!,
       );
-      _items.add(product_to_add);
+      _items.add(productToAdd);
       notifyListeners();
     } catch (error) {
-      print(error);
-      throw error;
+      if (kDebugMode) {
+        print(error);
+      }
+      rethrow;
     }
   }
 
   Future<void> updateProduct(Product newPrdct) async {
-    print(
+    if (kDebugMode) {
+      print(
       ">>>>>>>>>  Product Before replacing"
       "id: ${newPrdct.id}\n"
       "title: ${newPrdct.title}\n"
@@ -273,6 +305,7 @@ class ProductsProvider with ChangeNotifier {
       "details: ${newPrdct.details}\n"
       "attributes: ${newPrdct.attributes}\n",
     );
+    }
     final prdct = Product(
       rating: newPrdct.rating,
       attributes: {...newPrdct.attributes},
@@ -283,6 +316,7 @@ class ProductsProvider with ChangeNotifier {
       imageURL: newPrdct.imageURL,
       discount: newPrdct.discount,
       details: [...?newPrdct.details],
+      creatorId: userId!,
     );
 
     var titleOfColors = prdct.attributes.keys.firstWhere(
@@ -307,7 +341,7 @@ class ProductsProvider with ChangeNotifier {
       final url = Uri.parse(
         "$address/products_provider/${prdct.id}.json?auth=$token",
       );
-      final value = await http.patch(
+      await http.patch(
         url,
         body: json.encode(
           {
@@ -326,7 +360,9 @@ class ProductsProvider with ChangeNotifier {
       );
 
       var idx = _items.indexWhere((element) => element.id == prdct.id);
-      print("\n$idx\n");
+      if (kDebugMode) {
+        print("\n$idx\n");
+      }
       final finalprdct = Product(
         rating: prdct.rating,
         attributes: {...prdct.attributes},
@@ -338,6 +374,7 @@ class ProductsProvider with ChangeNotifier {
         discount: prdct.discount,
         details: [...?prdct.details],
         isFavourite: _items[idx].isFavourite,
+        creatorId: userId!,
       );
       _items.replaceRange(idx, idx + 1, [finalprdct]);
       if (kDebugMode) {
@@ -356,8 +393,10 @@ class ProductsProvider with ChangeNotifier {
       }
       notifyListeners();
     } catch (error) {
-      print(error);
-      throw error;
+      if (kDebugMode) {
+        print(error);
+      }
+      rethrow;
     }
   }
 

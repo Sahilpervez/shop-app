@@ -15,16 +15,17 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = "/UserProductsScreen";
 
   Future<void> _refreshProducts (BuildContext context) async{
-    await Provider.of<ProductsProvider>(context,listen: false).fetchAndSetProducts();
+    await Provider.of<ProductsProvider>(context,listen: false).fetchAndSetProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<ProductsProvider>(context);
+    // final productsData = Provider.of<ProductsProvider>(context);
+    print("1");
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Your Products",
           style: TextStyle(
               fontFamily: AppStyle.defaultText,
@@ -33,7 +34,7 @@ class UserProductsScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
             ),
             onPressed: () {
@@ -43,32 +44,41 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: AppStyle.bgColor,
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: GridView(
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-            childAspectRatio: 5 / 1.9,
-            maxCrossAxisExtent: 500,
-            mainAxisSpacing: 7,
-            crossAxisSpacing: 10,
-            // mainAxisExtent: 150,
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder : (ctx,snapshot) =>
+         (snapshot.connectionState == ConnectionState.waiting)?
+         const Center(
+          child: CircularProgressIndicator(),
+         ):RefreshIndicator(
+          onRefresh: () => _refreshProducts(context),
+          child: Consumer<ProductsProvider>(
+            builder: (ctx,productsData,_)=> GridView(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                childAspectRatio: 5 / 1.9,
+                maxCrossAxisExtent: 500,
+                mainAxisSpacing: 7,
+                crossAxisSpacing: 10,
+                // mainAxisExtent: 150,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              children: [
+                ...productsData.userItems
+                    .map(
+                      (e) => LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          return UserProductWidget(
+                            constraints: constraints,
+                            e: e,
+                            scaffold: ScaffoldMessenger.of(context),
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
+              ],
+            ),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 6),
-          children: [
-            ...productsData.items
-                .map(
-                  (e) => LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return UserProductWidget(
-                        constraints: constraints,
-                        e: e,
-                        scaffold: ScaffoldMessenger.of(context),
-                      );
-                    },
-                  ),
-                )
-                .toList(),
-          ],
         ),
       ),
     );

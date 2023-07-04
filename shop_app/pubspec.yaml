@@ -55,8 +55,9 @@ dev_dependencies:
   flutter_colorpicker:
   flutter_circle_color_picker:
   http:
+  shared_preferences:
 
-# For information on the generic Dart part of this file, see the
+  # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.

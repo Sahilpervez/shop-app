@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -26,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
   var _isLoading = false;
-  var _authDetails = {
+  Map<String, String> _authDetails = {
     "email": "",
     "password": "",
   };
@@ -41,8 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void saveData() {
-    _authDetails['email'] = "${emailController.text}";
-    _authDetails['password'] = "${passwordController.text}";
+    _authDetails['email'] = emailController.text;
+    _authDetails['password'] = passwordController.text;
   }
 
   void _showErrorDialogue(String message) {
@@ -83,11 +85,15 @@ class _LoginScreenState extends State<LoginScreen> {
             .signup(_authDetails['email']!, _authDetails['password']!);
       }
     } on HttpException catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       var errorMessage = "Authentication failed";
     } catch (error) {
       var errorMessage = "Couldn't authenticate you, Try again later";
-      print("Inside catch block in login_screen $error");
+      if (kDebugMode) {
+        print("Inside catch block in login_screen $error");
+      }
       if (error.toString().contains("EMAIL_EXISTS")) {
         errorMessage = "Email address already in use";
       } else if (error.toString().contains("INVALID_EMAIL")) {
@@ -125,15 +131,20 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+            ),
             child: Form(
               key: _formkey,
               child: ListView(
                 children: [
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Image(
                         image: AssetImage("assets/LogoImage.png"),
+                        height: 270,
                       ),
                       Text(
                         (_authMode == AuthMode.login)
@@ -189,7 +200,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(fontSize: 19),
                           onTapOutside: (value) {
                             emailFocusNode.unfocus();
-                            print(emailController.text);
+                            if (kDebugMode) {
+                              print(emailController.text);
+                            }
                           },
                           onSaved: (value) {
                             _authDetails['email'] = value!;
@@ -213,6 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value!.isEmpty) {
                               return "Enter Password";
                             }
+                            return null;
                           },
                           controller: passwordController,
                           focusNode: passwordFocusNode,
@@ -226,10 +240,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: const TextStyle(fontSize: 19),
                           onTapOutside: (value) {
                             passwordFocusNode.unfocus();
-                            print(passwordController.text);
+                            if (kDebugMode) {
+                              print(passwordController.text);
+                            }
                           },
                           onSaved: (value) {
                             _authDetails['password'] = value!;
+                          },
+                          onFieldSubmitted: (value){
+                            _authDetails['password'] = value;
+                            _submit();
                           },
                         ),
                       ),
@@ -251,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Confirm Password";
-                              } else if (value! != passwordController.text) {
+                              } else if (value != passwordController.text) {
                                 return "Passwords do not match";
                               }
                               return null;
@@ -276,11 +296,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             onSaved: (value) {
                               // _authDetails['password'] = value!;
+                              print("onSaved");
+                              // _submit();
+                            },
+                            onFieldSubmitted: (value){
+                              // _submit();
+                              print("onFieldSubmitted");
                             },
                           ),
                         ),
                       Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        margin: const EdgeInsets.only(top: 5),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -317,7 +343,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

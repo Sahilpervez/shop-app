@@ -34,19 +34,21 @@ class MyApp extends StatelessWidget {
           update: (BuildContext context, auth,
                   ProductsProvider? previousProducts) =>
               ProductsProvider(
-                  previousProducts != null ? previousProducts.items : [],
-                  token: auth.token,userId: auth.userId),
+            previousProducts != null ? previousProducts.items : [],
+            token: auth.token,
+            userId: auth.userId,
+          ),
           // value: ProductsProvider(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
-        ChangeNotifierProxyProvider<Auth , Orders>(
+        ChangeNotifierProxyProvider<Auth, Orders>(
           create: (ctx) => Orders([]),
-          update: (BuildContext context, value, Orders? previous)
-          => Orders(
-            previous!= null ? previous.items : [],
+          update: (BuildContext context, value, Orders? previous) => Orders(
+            previous != null ? previous.items : [],
             token: value.token,
+            userId: value.userId,
           ),
         ),
       ],
@@ -58,10 +60,17 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             useMaterial3: true,
           ),
-          // home: ProductsOverviewScreen(),
           home: (authData.isAuth)
               ? ProductsOverviewScreen()
-              : const LoginScreen(),
+              : FutureBuilder(
+                future: authData.autoLogin(),
+                builder: (ctx, authResultSnapshot) => 
+                (authResultSnapshot.connectionState != ConnectionState.waiting) ? 
+                const LoginScreen()
+                :const Scaffold(body: Center(
+                  child: Text("Loading...."),
+                ),)
+                ),
           routes: {
             ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
             CartScreen.routeName: (ctx) => CartScreen(),

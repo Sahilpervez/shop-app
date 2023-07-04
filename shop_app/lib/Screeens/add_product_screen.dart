@@ -33,7 +33,8 @@ class _AddProductScreen extends State<AddProductScreen> {
       title: "",
       description: "",
       price: 0,
-      imageURL: "");
+      imageURL: "",
+      creatorId: "");
   // TODO: Implement pushing the product to the main database
 
   String _hereTitle = "";
@@ -95,12 +96,12 @@ class _AddProductScreen extends State<AddProductScreen> {
   }
 
   void _updateImageURL() {
-    if ((!_imageURLController.text!.startsWith("http") &&
-            !_imageURLController.text!.startsWith("https")) ||
-        (!_imageURLController.text!.endsWith('.png') &&
-            !_imageURLController.text!.endsWith(".jpg") &&
-            !_imageURLController.text!.endsWith('.jpeg') &&
-            !_imageURLController.text!.endsWith('.webp'))) {
+    if ((!_imageURLController.text.startsWith("http") &&
+            !_imageURLController.text.startsWith("https")) ||
+        (!_imageURLController.text.endsWith('.png') &&
+            !_imageURLController.text.endsWith(".jpg") &&
+            !_imageURLController.text.endsWith('.jpeg') &&
+            !_imageURLController.text.endsWith('.webp'))) {
       return;
     }
     if (!_imageURLFocusNode.hasFocus) {
@@ -128,6 +129,7 @@ class _AddProductScreen extends State<AddProductScreen> {
       imageURL: _editedProduct.imageURL,
       discount: _hereDiscount,
       details: _details,
+      creatorId: ""
     );
     var prdct = Product(
       rating: _editedProduct.rating,
@@ -139,6 +141,7 @@ class _AddProductScreen extends State<AddProductScreen> {
       imageURL: _editedProduct.imageURL,
       discount: _hereDiscount,
       details: _details,
+      creatorId: ""
     );
     setState(() {
       _isLoading = true;
@@ -240,6 +243,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                         description: _editedProduct.description,
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: ""
                       );
                     }
                   },
@@ -278,6 +282,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                         description: _editedProduct.description,
                         price: _herePrice,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
@@ -322,6 +327,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                       description: _descriptionController.text,
                       price: _editedProduct.price,
                       imageURL: _editedProduct.imageURL,
+                      creatorId: "",
                     );
                   },
                   onFieldSubmitted: (value) {
@@ -344,6 +350,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                       description: value!,
                       price: _editedProduct.price,
                       imageURL: _editedProduct.imageURL,
+                      creatorId: "",
                     );
                   },
                 ),
@@ -383,6 +390,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
                         discount: _hereDiscount,
+                        creatorId: "",
                       );
                     }
                   },
@@ -454,6 +462,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                               description: _editedProduct.description,
                               price: _editedProduct.price,
                               imageURL: _imageURLController.text,
+                              creatorId: "",
                             );
                           }
                         },
@@ -507,6 +516,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                         description: _editedProduct.description,
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
@@ -514,13 +524,14 @@ class _AddProductScreen extends State<AddProductScreen> {
                     print(value);
                     if (value!.isNotEmpty) {
                       _editedProduct = Product(
-                        rating: double.parse(value!),
+                        rating: double.parse(value),
                         attributes: _editedProduct.attributes,
                         id: _editedProduct.id,
                         title: _editedProduct.title,
                         description: _editedProduct.description,
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
@@ -1630,5 +1641,11 @@ class _AddProductScreen extends State<AddProductScreen> {
         }),
       ),
     );
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<GlobalKey<FormState>>('_form', _form));
+    properties.add(DiagnosticsProperty<GlobalKey<FormState>>('_form', _form));
   }
 }

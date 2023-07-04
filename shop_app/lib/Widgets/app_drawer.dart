@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 import 'package:shop_app/Screeens/cart_screen.dart';
+import 'package:shop_app/Screeens/login_screen.dart';
 import 'package:shop_app/Screeens/orders_screen.dart';
 import 'package:shop_app/Screeens/user_product_screen.dart';
+
+import '../Model/providers/auth.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -134,7 +138,7 @@ class AppDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
             InkWell(
               onTap: () {
                 Navigator.of(context)
@@ -153,7 +157,27 @@ class AppDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+                // Navigator.of(context).pushNamed(LoginScreen.route);
+                Provider.of<Auth>(context,listen: false).logout();
+              },
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                  child: Row(
+                    children: [
+                      Container(margin: const EdgeInsets.only(right: 30)
+                        ,child: const Icon(Icons.logout_rounded,),),
+                      const Text("Logout",style: TextStyle(fontSize: 20),),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const Divider(),
           ],
         ),
       ),

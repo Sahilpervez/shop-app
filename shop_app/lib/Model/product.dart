@@ -14,6 +14,7 @@ class Product with ChangeNotifier {
   final List<String>? details;
   final double rating;
   final Map<String, dynamic> attributes;
+  final String creatorId;
   bool isFavourite;
   String? fireBaseId;
 
@@ -24,6 +25,7 @@ class Product with ChangeNotifier {
     required this.title,
     required this.description,
     required this.price,
+    required this.creatorId,
     this.details,
     this.fireBaseId,
     required this.imageURL,

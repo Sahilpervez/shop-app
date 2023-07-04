@@ -33,7 +33,8 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
       title: "",
       description: "",
       price: 0,
-      imageURL: "");
+      imageURL: "",creatorId: "",
+      );
   // TODO: Implement pushing the product to the main database
 
   String _hereTitle = "";
@@ -190,6 +191,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
       imageURL: _editedProduct.imageURL,
       discount: _hereDiscount,
       details: _details,
+      creatorId: "",
     );
     var prdct = Product(
       rating: _editedProduct.rating,
@@ -201,6 +203,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
       imageURL: _editedProduct.imageURL,
       discount: _hereDiscount,
       details: _details,
+      creatorId: "",
     );
     try{
       await Provider.of<ProductsProvider>(context,listen: false).updateProduct(prdct);
@@ -284,6 +287,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                         description: _editedProduct.description,
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
@@ -322,6 +326,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                         description: _editedProduct.description,
                         price: _herePrice,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
@@ -366,6 +371,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                       description: _descriptionController.text,
                       price: _editedProduct.price,
                       imageURL: _editedProduct.imageURL,
+                      creatorId: "",
                     );
                   },
                   onFieldSubmitted: (value) {
@@ -388,6 +394,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                       description: value!,
                       price: _editedProduct.price,
                       imageURL: _editedProduct.imageURL,
+                      creatorId: "",
                     );
                   },
                 ),
@@ -419,6 +426,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                       _hereDiscount = double.parse(_discountController.text);
                       print(_hereDiscount.runtimeType);
                       _editedProduct = Product(
+                        creatorId: "",
                         rating: _editedProduct.rating,
                         attributes: _editedProduct.attributes,
                         id: _editedProduct.id,
@@ -497,6 +505,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                               description: _editedProduct.description,
                               price: _editedProduct.price,
                               imageURL: _imageURLController.text,
+                              creatorId: "",
                             );
                           }
                         },
@@ -550,20 +559,24 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                         description: _editedProduct.description,
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
                   onSaved: (value) {
-                    print(value);
+                    if (kDebugMode) {
+                      print(value);
+                    }
                     if (value!.isNotEmpty) {
                       _editedProduct = Product(
-                        rating: double.parse(value!),
+                        rating: double.parse(value),
                         attributes: _editedProduct.attributes,
                         id: _editedProduct.id,
                         title: _editedProduct.title,
                         description: _editedProduct.description,
                         price: _editedProduct.price,
                         imageURL: _editedProduct.imageURL,
+                        creatorId: "",
                       );
                     }
                   },
