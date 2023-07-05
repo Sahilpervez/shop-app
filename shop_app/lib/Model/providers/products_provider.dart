@@ -10,10 +10,7 @@ import '../product.dart';
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [];
 
-  List<Product> _userItems = [];
-
-  // static const address = String.fromEnvironment("ADDRESS");
-  static const address = "https://shopapp-9bf44-default-rtdb.firebaseio.com/";
+  static const address = String.fromEnvironment("ADDRESS");
 
   var TopBarItems = [
     "Sneakers",
@@ -116,7 +113,7 @@ class ProductsProvider with ChangeNotifier {
 
   // To fetch the data when loading the app
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
-    _items = [];
+    // _items = [];
     try {
       List<dynamic> loadedData;
       await getData(filterByUser).then((value) {
@@ -127,7 +124,7 @@ class ProductsProvider with ChangeNotifier {
         if (kDebugMode) {
           print(1);
         }
-        loadedData.forEach((e) {
+        for (var e in loadedData) {
           // if the Product is already present in the _items then just print the Product
           if (_items.indexWhere((element) => element.id == e['key']) != -1) {
             if (kDebugMode) {
@@ -185,7 +182,7 @@ class ProductsProvider with ChangeNotifier {
             _items.add(hereProduct);
           
           }
-        });
+        }
       });
       notifyListeners();
     } catch (error) {

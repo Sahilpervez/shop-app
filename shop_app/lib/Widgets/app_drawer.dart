@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 import 'package:shop_app/Screeens/cart_screen.dart';
-import 'package:shop_app/Screeens/login_screen.dart';
 import 'package:shop_app/Screeens/orders_screen.dart';
 import 'package:shop_app/Screeens/user_product_screen.dart';
 
@@ -18,13 +17,13 @@ class AppDrawer extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               alignment: Alignment.centerLeft,
               child: Row(
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(
                           "https://images.newscientist.com/wp-content/uploads/2019/06/18142824/einstein.jpg",
@@ -39,7 +38,7 @@ class AppDrawer extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Hello Friend!!",
                         style: TextStyle(
                           fontFamily: AppStyle.defaultText,
@@ -49,15 +48,15 @@ class AppDrawer extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            margin: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
+                            margin: const EdgeInsets.all(10),
+                            decoration: const BoxDecoration(
                               color: Color(0xff4EE753),
                               shape: BoxShape.circle,
                             ),
                             height: 11,
                             width: 11,
                           ),
-                          Text("Active"),
+                          const Text("Active"),
                         ],
                       )
                     ],
@@ -65,7 +64,7 @@ class AppDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            Divider(),
+            const Divider(),
             // ListTile(
             //   style: ListTileStyle.drawer,
             //   leading: Icon(Icons.shop),
@@ -79,20 +78,18 @@ class AppDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pushReplacementNamed('/');
               },
-              child: Container(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  child: Row(
-                    children: [
-                      Container(margin: EdgeInsets.only(right: 30)
-                          ,child: Icon(Icons.shop,)),
-                      Text("Shop",style: TextStyle(fontSize: 20),),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: Row(
+                  children: [
+                    Container(margin: const EdgeInsets.only(right: 30)
+                        ,child: const Icon(Icons.shop,)),
+                    const Text("Shop",style: TextStyle(fontSize: 20),),
+                  ],
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
             // ListTile(
             //   leading: Icon(Icons.payment_rounded),
             //   title: Text("Orders"),
@@ -106,35 +103,31 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context)
                     .pushReplacementNamed(OrdersScreen.namedRoute);
               },
-              child: Container(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  child: Row(
-                    children: [
-                      Container(margin: EdgeInsets.only(right: 30)
-                          ,child: Icon(Icons.payment_rounded,),),
-                      Text("Your Orders",style: TextStyle(fontSize: 20),),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: Row(
+                  children: [
+                    Container(margin: const EdgeInsets.only(right: 30)
+                        ,child: const Icon(Icons.payment_rounded,),),
+                    const Text("Your Orders",style: TextStyle(fontSize: 20),),
+                  ],
                 ),
               ),
             ),
-            Divider(),
+            const Divider(),
             InkWell(
               onTap: () {
                 Navigator.of(context)
                     .pushNamed(CartScreen.routeName);
               },
-              child: Container(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  child: Row(
-                    children: [
-                      Container(margin: EdgeInsets.only(right: 30)
-                        ,child: Icon(Icons.shopping_cart,),),
-                      Text("Your Cart",style: TextStyle(fontSize: 20),),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: Row(
+                  children: [
+                    Container(margin: const EdgeInsets.only(right: 30)
+                      ,child: const Icon(Icons.shopping_cart,),),
+                    const Text("Your Cart",style: TextStyle(fontSize: 20),),
+                  ],
                 ),
               ),
             ),
@@ -144,16 +137,14 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context)
                     .pushNamed(UserProductsScreen.routeName);
               },
-              child: Container(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  child: Row(
-                    children: [
-                      Container(margin: EdgeInsets.only(right: 30)
-                        ,child: Icon(Icons.inventory_2_rounded,),),
-                      Text("Your Products",style: TextStyle(fontSize: 20),),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: Row(
+                  children: [
+                    Container(margin: const EdgeInsets.only(right: 30)
+                      ,child: const Icon(Icons.inventory_2_rounded,),),
+                    const Text("Your Products",style: TextStyle(fontSize: 20),),
+                  ],
                 ),
               ),
             ),
@@ -161,19 +152,17 @@ class AppDrawer extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.of(context).pop();
-                // Navigator.of(context).pushNamed(LoginScreen.route);
+                Navigator.of(context).pushNamed("/");
                 Provider.of<Auth>(context,listen: false).logout();
               },
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  child: Row(
-                    children: [
-                      Container(margin: const EdgeInsets.only(right: 30)
-                        ,child: const Icon(Icons.logout_rounded,),),
-                      const Text("Logout",style: TextStyle(fontSize: 20),),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                child: Row(
+                  children: [
+                    Container(margin: const EdgeInsets.only(right: 30)
+                      ,child: const Icon(Icons.logout_rounded,),),
+                    const Text("Logout",style: TextStyle(fontSize: 20),),
+                  ],
                 ),
               ),
             ),

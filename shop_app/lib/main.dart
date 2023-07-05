@@ -11,7 +11,6 @@ import 'package:shop_app/Screeens/product_detail_screen.dart';
 import 'package:shop_app/Screeens/products_overview_screen.dart';
 import 'package:shop_app/Screeens/user_product_screen.dart';
 import './Model/providers/products_provider.dart';
-import 'Model/product.dart';
 import 'Model/providers/auth.dart';
 
 void main() {
@@ -61,7 +60,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           home: (authData.isAuth)
-              ? ProductsOverviewScreen()
+              ? const ProductsOverviewScreen()
               : FutureBuilder(
                 future: authData.autoLogin(),
                 builder: (ctx, authResultSnapshot) => 
@@ -72,15 +71,15 @@ class MyApp extends StatelessWidget {
                 ),)
                 ),
           routes: {
-            ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
-            CartScreen.routeName: (ctx) => CartScreen(),
-            OrdersScreen.namedRoute: (ctx) => OrdersScreen(),
-            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-            AddProductScreen.routeName: (ctx) => AddProductScreen(),
+            ProductDetailsScreen.routeName: (ctx) => const ProductDetailsScreen(),
+            CartScreen.routeName: (ctx) => const CartScreen(),
+            OrdersScreen.namedRoute: (ctx) => const OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => const UserProductsScreen(),
+            AddProductScreen.routeName: (ctx) => const AddProductScreen(),
             EditByUserProductScreen.routeName: (ctx) =>
-                EditByUserProductScreen(),
-            LoginScreen.route: (ctx) => LoginScreen(),
-            ProductsOverviewScreen.route: (ctx) => ProductsOverviewScreen(),
+                const EditByUserProductScreen(),
+            LoginScreen.route: (ctx) => const LoginScreen(),
+            ProductsOverviewScreen.route: (ctx) => const ProductsOverviewScreen(),
           },
         ),
       ),

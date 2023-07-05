@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/Model/providers/cart.dart';
 import 'package:shop_app/Model/providers/products_provider.dart';
@@ -66,8 +64,10 @@ class Orders with ChangeNotifier {
       );
       notifyListeners();
     } catch (error) {
-      print(error);
-      throw error;
+      if (kDebugMode) {
+        print(error);
+      }
+      rethrow;
     }
   }
 
@@ -93,7 +93,7 @@ class Orders with ChangeNotifier {
           }
           if ((_orders.indexWhere((element) => element.id == key)) == -1 ) {
 
-            var _products = [];
+            var products = [];
             value['products'].forEach((e) {
               // if (_orders.indexWhere((element) => element.id == e['id']) != -1 ) {
               //   print("adding");
@@ -101,7 +101,7 @@ class Orders with ChangeNotifier {
               // } else {
               //   print("already Exists");
               // }
-              _products.add(
+              products.add(
                 CartItem(
                   id: e['id'],
                   productId: e['productId'],
@@ -113,7 +113,7 @@ class Orders with ChangeNotifier {
             });
             final tempOrder = OrderItem(
               id: key,
-              products: [..._products],
+              products: [...products],
               amount: value['amount'],
               dateTime: DateTime.parse(value['dateTime']),
             );
@@ -134,7 +134,7 @@ class Orders with ChangeNotifier {
       if (kDebugMode) {
         print(error);
       }
-      throw error;
+      rethrow;
     }
   }
 }

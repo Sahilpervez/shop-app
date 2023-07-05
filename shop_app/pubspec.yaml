@@ -36,16 +36,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   ionicons:
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^2.0.0
   auto_size_text:
   intl:
@@ -56,6 +46,18 @@ dev_dependencies:
   flutter_circle_color_picker:
   http:
   shared_preferences:
+  url_launcher:
+  lottie:
+
+dev_dependencies:
+
+  flutter_test:
+    sdk: flutter
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
 
   # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -72,6 +74,16 @@ flutter:
   assets:
     - assets/LogoImage.png
     - assets/AccountExists.gif
+    - assets/github.png
+    - assets/Product_not_found.gif
+    - assets/Product_not_found_1.gif
+    - assets/OrdersNotFounnd.json
+    - assets/CartIsEmpty.png
+    - assets/Loading.gif
+    - assets/Loading_1.json
+    - assets/Loading_2.json
+    - assets/Loading_3.json
+    - assets/Loading_4.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:color_picker_field/color_picker_field.dart';
-// import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
@@ -151,14 +150,14 @@ class _AddProductScreen extends State<AddProductScreen> {
         .catchError((error){
           return showDialog(context: context, builder: (ctx){
             return AlertDialog(
-              title: Text("An Error Occured!!"),
-              content: Text("Something went wrong"),
+              title: const Text("An Error Occured!!"),
+              content: const Text("Something went wrong"),
               actions: [
                 TextButton(
                   onPressed: (){
                     Navigator.of(ctx).pop();
                   },
-                  child: Text("Okay"),
+                  child: const Text("Okay"),
                 ),
               ],
             );
@@ -188,8 +187,6 @@ class _AddProductScreen extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ProductDataBase =
-        Provider.of<ProductsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -209,7 +206,7 @@ class _AddProductScreen extends State<AddProductScreen> {
         ],
         centerTitle: true,
       ),
-      body: _isLoading ? Center(child: CircularProgressIndicator(),) :Padding(
+      body: _isLoading ? const Center(child: CircularProgressIndicator(),) :Padding(
         padding: const EdgeInsets.all(16.0),
         child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
@@ -330,17 +327,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                       creatorId: "",
                     );
                   },
-                  onFieldSubmitted: (value) {
-                    // _editedProduct = Product(
-                    //   rating: _editedProduct.rating,
-                    //   attributes: _editedProduct.attributes,
-                    //   id: _editedProduct.id,
-                    //   title: _editedProduct.title,
-                    //   description: value,
-                    //   price: _editedProduct.price,
-                    //   imageURL: _editedProduct.imageURL,
-                    // );
-                  },
+                  onFieldSubmitted: (value) {},
                   onSaved: (value) {
                     _editedProduct = Product(
                       rating: _editedProduct.rating,
@@ -377,10 +364,14 @@ class _AddProductScreen extends State<AddProductScreen> {
                   controller: _discountController,
                   keyboardType: TextInputType.number,
                   onTapOutside: (_) {
-                    print(_discountController.text);
+                    if (kDebugMode) {
+                      print(_discountController.text);
+                    }
                     if (_discountController.text.isNotEmpty) {
                       _hereDiscount = double.parse(_discountController.text);
-                      print(_hereDiscount.runtimeType);
+                      if (kDebugMode) {
+                        print(_hereDiscount.runtimeType);
+                      }
                       _editedProduct = Product(
                         rating: _editedProduct.rating,
                         attributes: _editedProduct.attributes,
@@ -506,10 +497,10 @@ class _AddProductScreen extends State<AddProductScreen> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   onTapOutside: (_) {
-                    var _rating = _ratingController.text;
-                    if (_rating.isNotEmpty) {
+                    var rating = _ratingController.text;
+                    if (rating.isNotEmpty) {
                       _editedProduct = Product(
-                        rating: double.parse(_rating),
+                        rating: double.parse(rating),
                         attributes: _editedProduct.attributes,
                         id: _editedProduct.id,
                         title: _editedProduct.title,
@@ -521,7 +512,9 @@ class _AddProductScreen extends State<AddProductScreen> {
                     }
                   },
                   onSaved: (value) {
-                    print(value);
+                    if (kDebugMode) {
+                      print(value);
+                    }
                     if (value!.isNotEmpty) {
                       _editedProduct = Product(
                         rating: double.parse(value),
@@ -804,7 +797,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                                   style: TextStyle(fontSize: 17),
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height:15),
+                                const SizedBox(height:15),
                                 PopupMenuButton(
                                   onSelected: (filterOptions selectedValue) {
                                     if (selectedValue == filterOptions.list) {
@@ -1167,7 +1160,7 @@ class _AddProductScreen extends State<AddProductScreen> {
                                   _mapColors.addAll(
                                       {_dynamicController.text: currColor});
                                   _dynamicController.clear();
-                                  currColor = Theme.of(context).buttonColor;
+                                  currColor = Theme.of(context).primaryColor;
                                 });
                                 if (kDebugMode) {
                                   print(_mapColors);

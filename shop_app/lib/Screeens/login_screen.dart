@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/Screeens/products_overview_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Model/providers/auth.dart';
 
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Image(
                         image: AssetImage("assets/LogoImage.png"),
@@ -159,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (_authMode == AuthMode.login)
                         Text(
                           "Welcome Back, you've been missed!",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.grey.shade600,
                             fontSize: 20,
@@ -249,7 +250,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           onFieldSubmitted: (value){
                             _authDetails['password'] = value;
-                            _submit();
+                            if(_authMode == AuthMode.login) {
+                              _submit();
+                            }
                           },
                         ),
                       ),
@@ -296,12 +299,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             onSaved: (value) {
                               // _authDetails['password'] = value!;
-                              print("onSaved");
-                              // _submit();
                             },
                             onFieldSubmitted: (value){
-                              // _submit();
-                              print("onFieldSubmitted");
+                              _submit();
+                              if (kDebugMode) {
+                                print("onFieldSubmitted");
+                              }
                             },
                           ),
                         ),
@@ -375,6 +378,82 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Created By",
+                        style: TextStyle(
+                          fontSize: 18
+                        ),),
+                        InkWell(
+                          onTap: () async {
+                            final uri = Uri.parse("https://github.com/Sahilpervez");
+                            if (await canLaunchUrl(uri)){
+                            await launchUrl(uri);
+                            } else {
+                            // can't launch url
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              Text("\t\tAlam Sahilpervez\t", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.purple
+                              ),),
+                              Image(image: AssetImage(
+                                "assets/github.png",
+                              ),
+                              height: 25,
+                              color: Colors.purple,),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                    const Text("Link to GitHub repo:",style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500
+                    ),),const Icon(
+                    Icons.arrow_forward
+                  ),
+                    InkWell(
+                      onTap: () async {
+                        final uri = Uri.parse("https://github.com/Sahilpervez/shop-app");
+                        if (await canLaunchUrl(uri)){
+                        await launchUrl(uri,webViewConfiguration: const WebViewConfiguration(
+                          enableDomStorage: true,enableJavaScript: true,
+                        ));
+                        } else {
+                        // can't launch url
+                        }
+                      },
+                      child: const Text(" Shop-App", style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold
+                      ),)
+                    ),
+                ],
+            ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  )
                 ],
               ),
             ),

@@ -1,18 +1,17 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 
-import '../Model/product.dart';
 import '../Model/providers/auth.dart';
 import '../Model/providers/cart.dart';
 import '../Model/providers/products_provider.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   // final String title;
-  ProductDetailsScreen();
+  const ProductDetailsScreen({super.key});
   static const routeName = "/Product_Details";
 
   @override
@@ -27,26 +26,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final products = Provider.of<ProductsProvider>(context, listen: false);
     final cart = Provider.of<Cart>(context);
     final loadedProduct = products.findById(id);
-    print("ID : $id");
-    print(loadedProduct.details);
-    print(loadedProduct.title);
-    print(loadedProduct.discount);
-    print(loadedProduct.imageURL);
-    print(loadedProduct.price);
-    print(loadedProduct.description);
-    print("Attributes\n${loadedProduct.attributes}\n");
-    if(loadedProduct.attributes.isNotEmpty){
-      print(loadedProduct.attributes.values.last.runtimeType);
+    if (kDebugMode) {
+      print("ID : $id");
+      print(loadedProduct.details);
+      print(loadedProduct.title);
+      print(loadedProduct.discount);
+      print(loadedProduct.imageURL);
+      print(loadedProduct.price);
+      print(loadedProduct.description);
+      print("Attributes\n${loadedProduct.attributes}\n");
+      if(loadedProduct.attributes.isNotEmpty){
+        print(loadedProduct.attributes.values.last.runtimeType);
+      }
     }
+
     final availableColors = loadedProduct.attributes.values.firstWhere((element) => element is Map<String,dynamic>, orElse: () => {});
     final availableColorsTitle = loadedProduct.attributes.keys.firstWhere((element) => loadedProduct.attributes[element] is Map<String,dynamic>, orElse: ()=> "");
-    print(">>>> $availableColors");
-    print(availableColors.isEmpty);
-    print("****** $availableColorsTitle");
+    if (kDebugMode) {
+      print(">>>> $availableColors");
+      print(availableColors.isEmpty);
+      print("****** $availableColorsTitle");
+    }
     final listAttribute = loadedProduct.attributes.values.firstWhere((element) => element is List<dynamic>, orElse: ()=> []);
-    print(">>>> $listAttribute");
+    if (kDebugMode) {
+      print(">>>> $listAttribute");
+    }
     final listTitle = loadedProduct.attributes.keys.firstWhere((element) => loadedProduct.attributes[element] is List<dynamic>, orElse: ()=> "");
-    print("****** $listTitle");
+    if (kDebugMode) {
+      print("****** $listTitle");
+    }
     // final availableColors =
     //     loadedProduct.attributes.values.last as Map<String, Color>;
     bool isFav = loadedProduct.isFavourite;
@@ -55,7 +63,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       appBar: AppBar(
         title: Text(
           loadedProduct.title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontFamily: AppStyle.defaultText,
           ),
@@ -63,7 +71,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             onPressed: () {
               loadedProduct.toggleFavouriteStatus(authData.token,authData.userId);
               setState(() {
@@ -85,27 +93,27 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           children: [
             Expanded(
               child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
                   if (loadedProduct.discount != null && loadedProduct.discount !=0)
                     Center(
                       child: Container(
-                        margin: EdgeInsets.only(top: 10),
-                        padding: EdgeInsets.all(4),
+                        margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Color(0xff50edf8),
+                          color: const Color(0xff50edf8),
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Text(
                           "${loadedProduct.discount?.toInt()}%",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: AppStyle.defaultText,
                             fontSize: 15,
                           ),
                         ),
                       ),
                     ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Center(
@@ -136,7 +144,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -144,7 +152,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     children: [
                       Text(
                         loadedProduct.title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: AppStyle.defaultText,
                           fontSize: 27,
                           color: AppStyle.bigTextColor,
@@ -154,14 +162,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       Expanded(
                         child: Container(),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.star_rounded,
                         color: Colors.amber,
                         size: 25,
                       ),
                       Text(
                         "(${loadedProduct.rating})",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: AppStyle.defaultText,
                           fontSize: 15,
                         ),
@@ -170,23 +178,23 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                   Text(
                     loadedProduct.description,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: AppStyle.defaultText,
                         fontSize: 20,
                         color: AppStyle.themeColor),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   if(listAttribute.isNotEmpty)
-                    Container(
+                    SizedBox(
                     height: constraints.maxHeight * 0.07 < 600 ? 50 : constraints.maxHeight * 0.07,
                     child: Row(
                       children: [
                         Center(
                           child: Text(
                             "$listTitle :",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: AppStyle.defaultText,
                               fontSize: 20,
                             ),
@@ -203,28 +211,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   (element) {
                                     return Card(
                                       elevation: 3,
-                                      margin: EdgeInsets.all(7),
+                                      margin: const EdgeInsets.all(7),
                                       color: Colors.lightBlueAccent,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Center(
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 15,
                                             vertical: 7,
-                                          ),
-                                          child: Text(
-                                            element,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                              fontFamily: AppStyle.defaultText,
-                                              color: Colors.black,
-                                            ),
                                           ),
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(20),
+                                          ),
+                                          child: Text(
+                                            element,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: AppStyle.defaultText,
+                                              color: Colors.black,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -240,19 +248,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
 
                   if(availableColors.isNotEmpty)
-                    Container(
-                    child: Text(
-                      "${availableColorsTitle} :",
-                      style: TextStyle(
+                    Text(
+                      "$availableColorsTitle :",
+                      style: const TextStyle(
                         fontFamily: AppStyle.defaultText,
                         fontSize: 20,
                       ),
                     ),
-                  ),
                   if(availableColors.isNotEmpty)
                     GridView(
                     shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       mainAxisSpacing: 5,
                       crossAxisSpacing: 5,childAspectRatio: 1,
                       maxCrossAxisExtent: 80,
@@ -260,19 +266,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     // physics: NeverScrollableScrollPhysics(),
                     children: [
                       ...availableColors.entries.map(
-                        (e) => Container(
-                          // height: constraints.maxWidth * 0.01,
-                          // width: constraints.maxWidth * 0.01,
-                          child: Card(
-                            elevation: 5,
-                            margin: EdgeInsets.all(10),
-                            shape: CircleBorder(),
-                              color: e.value,
-                            child: Container(
-                              decoration: BoxDecoration(shape: BoxShape.circle),
-                              height: 10,
-                              width: 10,
-                            ),
+                        (e) => Card(
+                          elevation: 5,
+                          margin: const EdgeInsets.all(10),
+                          shape: const CircleBorder(),
+                            color: e.value,
+                          child: Container(
+                            decoration: const BoxDecoration(shape: BoxShape.circle),
+                            height: 10,
+                            width: 10,
                           ),
                         ),
                       ),
@@ -284,7 +286,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Container(
               width: min(constraints.maxWidth, 500),
               height: max(constraints.maxHeight * 0.108, 60),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(30),
                   topLeft: Radius.circular(30),
@@ -292,18 +294,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 color: Colors.white,
               ),
               child: Padding(
-                padding: constraints.maxHeight < 600 ?EdgeInsets.symmetric(horizontal: 15,vertical: 10) : EdgeInsets.all(20),
+                padding: constraints.maxHeight < 600 ?const EdgeInsets.symmetric(horizontal: 15,vertical: 10) : const EdgeInsets.all(20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       "\$${loadedProduct.price.toString()}",
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 21, fontFamily: AppStyle.defaultText),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     TextButton.icon(
-                      icon: Icon(Icons.shopping_cart),
+                      icon: const Icon(Icons.shopping_cart),
                       onPressed: () {
                         cart.additems(loadedProduct.id, loadedProduct.price,
                             loadedProduct.title);

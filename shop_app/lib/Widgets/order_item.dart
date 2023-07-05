@@ -23,7 +23,7 @@ class _OrderItemState extends State<OrderItem> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Column(
         children: [
           ListTile(
@@ -32,7 +32,7 @@ class _OrderItemState extends State<OrderItem> {
             ),
             title: Text(
               "\$${widget.order.amount.toStringAsFixed(2)}",
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
                   fontFamily: AppStyle.defaultText),
@@ -60,7 +60,7 @@ class _OrderItemState extends State<OrderItem> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
               ),
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               height: min(widget.order.products.length * 30 + 25, 180),
               child: ListView(
                 children: [
@@ -70,16 +70,16 @@ class _OrderItemState extends State<OrderItem> {
                           children: [
                             Text(
                               "${e.title}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: AppStyle.defaultText,
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               "${e.quantity}x \$${e.price}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,

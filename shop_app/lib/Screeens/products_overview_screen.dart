@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shop_app/AppUtils/Badge.dart';
+import 'package:shop_app/AppUtils/styles.dart';
 import 'package:shop_app/Model/providers/cart.dart';
 import 'package:shop_app/Screeens/cart_screen.dart';
 import 'package:shop_app/Widgets/app_drawer.dart';
@@ -17,7 +20,7 @@ enum FilterOptions {
 }
 
 class ProductsOverviewScreen extends StatefulWidget {
-  ProductsOverviewScreen({Key? key}) : super(key: key);
+  const ProductsOverviewScreen({Key? key}) : super(key: key);
 
   static const route = "/ProductsOverviewScreen";
 
@@ -45,13 +48,15 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _isInit = true;
   bool _isLoading = false;
   @override
-  void didChangeDependencies() {
-    if(_isInit == true){
+  Future<void> didChangeDependencies() async {
+    if (_isInit == true) {
       setState(() {
         _isLoading = true;
       });
 
-      Provider.of<ProductsProvider>(context).fetchAndSetProducts().then((_){
+      await Provider.of<ProductsProvider>(context)
+          .fetchAndSetProducts()
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -62,15 +67,19 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
+
   var _showOnlyFavoutites = false;
 
-  Future<void> _refreshProducts (BuildContext context)async {
-    await Provider.of<ProductsProvider>(context,listen: false).fetchAndSetProducts();
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .fetchAndSetProducts();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Build");
+    if (kDebugMode) {
+      print("Build");
+    }
     final topBarItemsHere =
         Provider.of<ProductsProvider>(context, listen: false).TopBarItems;
     return Scaffold(
@@ -131,7 +140,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 child: ch!,
               ),
               child: IconButton(
-                icon: Icon(Icons.shopping_cart),
+                icon: const Icon(Icons.shopping_cart),
                 onPressed: () {
                   Navigator.of(context).pushNamed(CartScreen.routeName);
                 },
@@ -141,8 +150,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
         // backgroundColor: Colors.red,
       ),
-      drawer: AppDrawer(),
-      backgroundColor: Color(0xfff3f2f2),
+      drawer: const AppDrawer(),
+      backgroundColor: const Color(0xfff3f2f2),
       body: RefreshIndicator(
         onRefresh: () => _refreshProducts(context),
         child: ListView(
@@ -152,7 +161,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                AutoSizeText(
+                const AutoSizeText(
                   "Our Products",
                   style: TextStyle(
                       color: Colors.black,
@@ -162,7 +171,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 ),
                 PopupMenuButton(
                   onSelected: (FilterOptions selectedValue) {
-                    print("$selectedValue");
+                    if (kDebugMode) {
+                      print("$selectedValue");
+                    }
                     if (selectedValue == FilterOptions.Favourites) {
                       // ProviderContainer.showFavouritesOnly();
                       setState(() {
@@ -207,15 +218,35 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
             TopBar(topBarItemsHere: topBarItemsHere),
             (_isLoading)
-                ?Column(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.35,
-                    ),
-                    Center(child: CircularProgressIndicator()),
-                  ],
-                )
-                :ProductsGrid(_showOnlyFavoutites),
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                      ),
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 95),
+                          height: 250,
+                          width: 250,
+                          child: Lottie.asset(
+                              "assets/Loading_4.json",
+                              fit: BoxFit.cover,
+                              frameRate: FrameRate(59)),
+                        ),
+                      ),
+                      const Text(
+                        "Loading",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: AppStyle.defaultText,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  )
+                : ProductsGrid(_showOnlyFavoutites),
           ],
         ),
       ),
@@ -249,7 +280,7 @@ class TopBar extends StatelessWidget {
 }
 
 class TopBarElements extends StatelessWidget {
-  final title;
+  final String title;
   const TopBarElements({
     required this.title,
     super.key,
@@ -260,13 +291,13 @@ class TopBarElements extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(color: Color(0xffE1E1E1), spreadRadius: 3, blurRadius: 1),
         ],
         color: Colors.white,
       ),
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Center(
         child: AutoSizeText(
           title,

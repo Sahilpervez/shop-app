@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:color_picker_field/color_picker_field.dart';
-// import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
@@ -19,7 +18,7 @@ enum filterOptions {
 }
 
 class EditByUserProductScreen extends StatefulWidget {
-  EditByUserProductScreen({Key? key}) : super(key: key);
+  const EditByUserProductScreen({Key? key}) : super(key: key);
   static const routeName = "/EditByUserProduct";
   @override
   State<EditByUserProductScreen> createState() => _EditByUserProductScreen();
@@ -209,14 +208,14 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
       await Provider.of<ProductsProvider>(context,listen: false).updateProduct(prdct);
     } catch(error){
       await showDialog(context: context, builder: (ctx)=> AlertDialog(
-        title: Text("An Error Occured"),
-        content: Text("Someting went wrong"),
+        title: const Text("An Error Occured"),
+        content: const Text("Someting went wrong"),
         actions: [
           TextButton(
             onPressed: (){
               Navigator.of(ctx).pop();
             },
-            child: Text("Okay"),
+            child: const Text("Okay"),
           ),
         ],
       ));
@@ -227,10 +226,6 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
       Navigator.of(context).pop();
     }
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +248,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
         ],
         centerTitle: true,
       ),
-      body: (_isLoading)?Center(child: CircularProgressIndicator()):Padding(
+      body: (_isLoading)?const Center(child: CircularProgressIndicator()):Padding(
         padding: const EdgeInsets.all(16.0),
         child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
@@ -273,7 +268,9 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                   controller: _titleController,
                   onFieldSubmitted: (value) {
                     _hereTitle = value;
-                    print(_hereTitle);
+                    if (kDebugMode) {
+                      print(_hereTitle);
+                    }
                     FocusScope.of(context).requestFocus(_priceFocusNode);
                   },
                   onTapOutside: (_) {
@@ -549,10 +546,10 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   onTapOutside: (_) {
-                    var _rating = _ratingController.text;
-                    if (_rating.isNotEmpty) {
+                    var rating = _ratingController.text;
+                    if (rating.isNotEmpty) {
                       _editedProduct = Product(
-                        rating: double.parse(_rating),
+                        rating: double.parse(rating),
                         attributes: _editedProduct.attributes,
                         id: _editedProduct.id,
                         title: _editedProduct.title,
@@ -945,7 +942,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                                       children: [
                                         Text(
                                           "${_listKeyController.text} : ",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -1219,7 +1216,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                                   _mapColors.addAll(
                                       {_dynamicController.text: currColor});
                                   _dynamicController.clear();
-                                  currColor = Theme.of(context).buttonColor;
+                                  currColor = Theme.of(context).primaryColor;
                                 });
                                 if (kDebugMode) {
                                   print(_mapColors);
@@ -1247,7 +1244,7 @@ class _EditByUserProductScreen extends State<EditByUserProductScreen> {
                             children: [
                               Text(
                                 "${_mapColorsKeyController.text} :",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),

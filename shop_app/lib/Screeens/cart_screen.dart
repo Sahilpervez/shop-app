@@ -7,6 +7,7 @@ import 'package:shop_app/AppUtils/styles.dart';
 import 'package:shop_app/Model/providers/orders.dart';
 import 'package:shop_app/Model/providers/products_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:shop_app/Screeens/products_overview_screen.dart';
 
 import '../Model/providers/cart.dart';
 
@@ -33,64 +34,112 @@ class CartScreen extends StatelessWidget {
       ),
       body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-        return Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(15),
-                children: [
-                  ...cartItems.entries.map(
-                    (entry) {
-                      return ItemOfCart(
-                        products: products,
-                        cart: cart,
-                        constraints: constraints,
-                        entry: entry,
-                      );
-                    },
-                  ).toList(),
-                ],
-              ),
-            ),
-            Container(
-              width: min(constraints.maxWidth, 500),
-              height: max(constraints.maxHeight * 0.108, 60),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30),
-                  topLeft: Radius.circular(30),
-                ),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Total : ",
-                      style: TextStyle(
-                          fontSize: 21, fontFamily: AppStyle.defaultText),
-                    ),
-                    // Spacer(),
-                    Chip(
-                      label: Text(
-                        "\$${cart.totalAmount.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
+        return (cartItems.isEmpty)
+            ? Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          image: AssetImage(
+                            "assets/CartIsEmpty.png",
+                          ),
                         ),
-                      ),
-                      backgroundColor: AppStyle.themeColor,
+                        const Text(
+                          "Cart is Empty",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              fontFamily: AppStyle.defaultText),
+                        ),
+                        const Text(
+                          "Add some items to cart",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              fontFamily: AppStyle.defaultText),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamedAndRemoveUntil(ProductsOverviewScreen.route, (route) => false);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0,vertical: 4,),
+                            child: Text(
+                              "Go to Home Screen",
+                              style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.blue
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Spacer(),
-                    OrderButton(cart: cart),
-                  ],
                 ),
-              ),
-            ),
-          ],
-        );
+              )
+            : Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.all(15),
+                      children: [
+                        ...cartItems.entries.map(
+                          (entry) {
+                            return ItemOfCart(
+                              products: products,
+                              cart: cart,
+                              constraints: constraints,
+                              entry: entry,
+                            );
+                          },
+                        ).toList(),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: min(constraints.maxWidth, 500),
+                    height: max(constraints.maxHeight * 0.108, 60),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(30),
+                        topLeft: Radius.circular(30),
+                      ),
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Total : ",
+                            style: TextStyle(
+                                fontSize: 21, fontFamily: AppStyle.defaultText),
+                          ),
+                          // Spacer(),
+                          Chip(
+                            label: Text(
+                              "\$${cart.totalAmount.toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                            ),
+                            backgroundColor: AppStyle.themeColor,
+                          ),
+                          const Spacer(),
+                          OrderButton(cart: cart),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
       }),
     );
   }
@@ -113,38 +162,40 @@ class _OrderButtonState extends State<OrderButton> {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: (widget.cart.totalAmount <=0 || _isLoading == true)
+      onPressed: (widget.cart.totalAmount <= 0 || _isLoading == true)
           ? null
           : () async {
-        setState(() {
-          _isLoading = true;
-        });
-        await Provider.of<Orders>(context, listen: false).addOrders(
-          widget.cart.items.values.toList(),
-          widget.cart.totalAmount,
-        );
-        _isLoading = false;
-        if (kDebugMode) {
-          widget.cart.items.values.toList().forEach(
-            (element) {
+              setState(() {
+                _isLoading = true;
+              });
+              await Provider.of<Orders>(context, listen: false).addOrders(
+                widget.cart.items.values.toList(),
+                widget.cart.totalAmount,
+              );
+              _isLoading = false;
               if (kDebugMode) {
-                print(
-                  "${element.id},${element.title},${element.price},${element.quantity}\n",
+                widget.cart.items.values.toList().forEach(
+                  (element) {
+                    if (kDebugMode) {
+                      print(
+                        "${element.id},${element.title},${element.price},${element.quantity}\n",
+                      );
+                    }
+                  },
                 );
+                print(widget.cart.totalAmount);
               }
+              widget.cart.clearCart();
             },
-          );
-          print(widget.cart.totalAmount);
-        }
-        widget.cart.clearCart();
-      },
-      child: (_isLoading == true) ? Center(child: const CircularProgressIndicator()) :const Text(
-        "ORDER NOW",
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: (_isLoading == true)
+          ? const Center(child: CircularProgressIndicator())
+          : const Text(
+              "ORDER NOW",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
     );
   }
 }
@@ -181,11 +232,11 @@ class ItemOfCart extends StatelessWidget {
         return showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text(
+            title: const Text(
               "Are you sure?",
               style: TextStyle(fontFamily: AppStyle.defaultText),
             ),
-            content: Text(
+            content: const Text(
               "Do you want to remove this item form Cart?",
               style: TextStyle(fontFamily: AppStyle.defaultText),
             ),
@@ -194,13 +245,13 @@ class ItemOfCart extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(ctx).pop(false);
                 },
-                child: Text("No"),
+                child: const Text("No"),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop(true);
                 },
-                child: Text("Yes"),
+                child: const Text("Yes"),
               ),
             ],
           ),
@@ -333,7 +384,7 @@ class ItemOfCart extends StatelessWidget {
                           ],
                   )
                 : Padding(
-                    padding: EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.only(right: 10),
                     child: Row(
                       children: (constraints.maxWidth > 397)
                           ? [

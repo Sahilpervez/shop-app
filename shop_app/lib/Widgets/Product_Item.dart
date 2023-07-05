@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 import 'dart:math';
-import 'package:ionicons/ionicons.dart';
 import 'package:shop_app/Model/providers/auth.dart';
-import 'package:shop_app/Model/providers/products_provider.dart';
 import 'package:shop_app/Screeens/product_detail_screen.dart';
 
 import '../Model/product.dart';
@@ -13,6 +12,8 @@ import '../Model/providers/cart.dart';
 
 class ProductItem extends StatelessWidget {
   int idx = Random().nextInt(50) % 4;
+
+  ProductItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class ProductItem extends StatelessWidget {
             );
           },
           child: Container(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 7, bottom: 7),
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 7, bottom: 7),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
@@ -50,16 +51,16 @@ class ProductItem extends StatelessWidget {
                       : MainAxisAlignment.end,
                   children: [
                     if( prdct.discount == 0)
-                      Spacer(),
+                      const Spacer(),
                     if (prdct.discount != null && prdct.discount != 0)
                       Container(
-                        padding: EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                            color: Color(0xff50edf8),
+                            color: const Color(0xff50edf8),
                             borderRadius: BorderRadius.circular(9)),
                         child: Text(
                           "${prdct.discount?.toInt()}%",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: AppStyle.defaultText,
                             fontSize: 12,
                           ),
@@ -69,7 +70,9 @@ class ProductItem extends StatelessWidget {
                       builder: (ctx, prdct, child) => IconButton(
                         onPressed: () {
                           prdct.toggleFavouriteStatus(authData.token,authData.userId);
-                          print("favoutite");
+                          if (kDebugMode) {
+                            print("favourite");
+                          }
                         },
                         icon: Icon(
                           prdct.isFavourite == true
@@ -112,7 +115,7 @@ class ProductItem extends StatelessWidget {
                     Text(
                       prdct.title,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: AppStyle.defaultText,
                         fontSize: 20,
                         color: AppStyle.bigTextColor,
@@ -170,12 +173,14 @@ class ProductItem extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         cart.additems(prdct.id, prdct.price, prdct.title);
-                        print(cart.numberOfItems);
+                        if (kDebugMode) {
+                          print(cart.numberOfItems);
+                        }
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Added item to Cart!!",),
-                            duration: Duration(seconds: 2),
+                            content: const Text("Added item to Cart!!",),
+                            duration: const Duration(seconds: 2),
                             action: SnackBarAction(
                               onPressed: (){
                                 cart.removeItems(prdct.id);
@@ -187,7 +192,7 @@ class ProductItem extends StatelessWidget {
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
+                        children: const [
                           Icon(Icons.shopping_cart_outlined),
                           Text("Add to Cart"),
                         ],

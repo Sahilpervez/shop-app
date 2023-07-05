@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/Model/http_exceptions.dart';
@@ -32,8 +31,9 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
+    const APIKEY = String.fromEnvironment("AUTHAPIKEY");
     final url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAQDuz7Cv6x0kP7mXhez74HtR5o5_Jpihw";
+        "https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$APIKEY";
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -58,7 +58,6 @@ class Auth with ChangeNotifier {
         ),
       );
       autoLogout();
-
       final pref = await SharedPreferences.getInstance();
       final userData = json.encode(
         {
@@ -67,13 +66,15 @@ class Auth with ChangeNotifier {
           'expiryDate' : _expiryDate?.toIso8601String(),
         }
       );
-      print(userData);
+      if (kDebugMode) {
+        print(userData);
+      }
       final result = await pref.setString('userData', userData);
-      print(result);
-      print("userData added to local storage");
-
+      if (kDebugMode) {
+        print(result);
+        print("userData added to local storage");
+      }
       notifyListeners();
-      
     } catch (error) {
       if (kDebugMode) {
         print("Inside Catch Block $error");
@@ -93,18 +94,24 @@ class Auth with ChangeNotifier {
   Future<bool> autoLogin()async {
     final prefs = await SharedPreferences.getInstance() ;
     if(! prefs.containsKey('userData')){
-      print("no UserData found");
+      if (kDebugMode) {
+        print("no UserData found");
+      }
       return false;
     }
     final extractedUserData = json.decode(prefs.getString('userData')!) as Map<String , dynamic>;
     
-    print(extractedUserData);
+    if (kDebugMode) {
+      print(extractedUserData);
+    }
 
     final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
 
     if(expiryDate.isBefore(DateTime.now())){
-      print("Token expired");
+      if (kDebugMode) {
+        print("Token expired");
+      }
       return false;
     }
 
@@ -131,7 +138,9 @@ class Auth with ChangeNotifier {
       print(data);
     }
     final result = await pref.clear();
-    print(result);
+    if (kDebugMode) {
+      print(result);
+    }
     notifyListeners();
   }
 

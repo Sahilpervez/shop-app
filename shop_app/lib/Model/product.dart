@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:shop_app/Model/providers/products_provider.dart';
 
 class Product with ChangeNotifier {
@@ -29,19 +28,23 @@ class Product with ChangeNotifier {
     this.details,
     this.fireBaseId,
     required this.imageURL,
-    this.discount = null,
+    this.discount,
     this.isFavourite = false,
   });
   static const address = ProductsProvider.address;
   Future<void> toggleFavouriteStatus(String? token, String? userId) async {
     isFavourite = !isFavourite;
-    print("$address/userFavourites/$userId/$id.json?auth=$token");
+    if (kDebugMode) {
+      print("$address/userFavourites/$userId/$id.json?auth=$token");
+    }
     final url = Uri.parse(
       "$address/userFavourites/$userId/$id.json?auth=$token",
     );
     final response =
         await http.put(url, body: json.encode(isFavourite));
-    print(response.body);
+    if (kDebugMode) {
+      print(response.body);
+    }
     notifyListeners();
   }
 }

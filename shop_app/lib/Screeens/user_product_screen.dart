@@ -1,27 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/AppUtils/styles.dart';
 import 'package:shop_app/Model/product.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-
-import 'package:responsive_grid/responsive_grid.dart';
-import 'package:responsive_layout_grid/responsive_layout_grid.dart';
 import 'package:shop_app/Model/providers/products_provider.dart';
 import 'package:shop_app/Screeens/edit_by_user_screen.dart';
 import 'package:shop_app/Screeens/add_product_screen.dart';
 
 class UserProductsScreen extends StatelessWidget {
-  UserProductsScreen({Key? key}) : super(key: key);
+  const UserProductsScreen({Key? key}) : super(key: key);
   static const routeName = "/UserProductsScreen";
 
-  Future<void> _refreshProducts (BuildContext context) async{
-    await Provider.of<ProductsProvider>(context,listen: false).fetchAndSetProducts(true);
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .fetchAndSetProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    // final productsData = Provider.of<ProductsProvider>(context);
-    print("1");
+    final prdcts =
+        Provider.of<ProductsProvider>(context, listen: false).userItems;
+    if (kDebugMode) {
+      print("1");
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -46,53 +47,83 @@ class UserProductsScreen extends StatelessWidget {
       backgroundColor: AppStyle.bgColor,
       body: FutureBuilder(
         future: _refreshProducts(context),
-        builder : (ctx,snapshot) =>
-         (snapshot.connectionState == ConnectionState.waiting)?
-         const Center(
-          child: CircularProgressIndicator(),
-         ):RefreshIndicator(
-          onRefresh: () => _refreshProducts(context),
-          child: Consumer<ProductsProvider>(
-            builder: (ctx,productsData,_)=> GridView(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                childAspectRatio: 5 / 1.9,
-                maxCrossAxisExtent: 500,
-                mainAxisSpacing: 7,
-                crossAxisSpacing: 10,
-                // mainAxisExtent: 150,
+        builder: (ctx, snapshot) => (snapshot.connectionState ==
+                ConnectionState.waiting)
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+                onRefresh: () => _refreshProducts(context),
+                child: Consumer<ProductsProvider>(
+                  builder: (ctx, productsData, _) => (productsData
+                              .userId!.isNotEmpty &&
+                          prdcts.isNotEmpty)
+                      ? GridView(
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            childAspectRatio: 5 / 1.9,
+                            maxCrossAxisExtent: 500,
+                            mainAxisSpacing: 7,
+                            crossAxisSpacing: 10,
+                            // mainAxisExtent: 150,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          children: [
+                            ...productsData.userItems
+                                .map(
+                                  (e) => LayoutBuilder(
+                                    builder: (BuildContext context,
+                                        BoxConstraints constraints) {
+                                      return UserProductWidget(
+                                        constraints: constraints,
+                                        e: e,
+                                        scaffold: ScaffoldMessenger.of(context),
+                                      );
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          ],
+                        )
+                      : Center(
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 250,
+                              width: 250,
+                              child: Image(
+                                image: AssetImage(
+                                  "assets/Product_not_found.gif",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Text(
+                              "You don't own/sell any products",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                  fontFamily: AppStyle.defaultText),
+                            ),
+                          ],
+                        )),
+                ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              children: [
-                ...productsData.userItems
-                    .map(
-                      (e) => LayoutBuilder(
-                        builder: (BuildContext context, BoxConstraints constraints) {
-                          return UserProductWidget(
-                            constraints: constraints,
-                            e: e,
-                            scaffold: ScaffoldMessenger.of(context),
-                          );
-                        },
-                      ),
-                    )
-                    .toList(),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
 }
 
 class UserProductWidget extends StatelessWidget {
-  UserProductWidget({
+  const UserProductWidget({
     super.key,
     required this.constraints,
     required this.e,
     required this.scaffold,
   });
-  final scaffold ;
+  final scaffold;
   final BoxConstraints constraints;
   final Product e;
   @override
@@ -113,12 +144,12 @@ class UserProductWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(
-                        "${e.imageURL}",
+                        e.imageURL,
                       ),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                           color: Colors.grey,
                           blurRadius: 10,
@@ -128,7 +159,7 @@ class UserProductWidget extends StatelessWidget {
                   ),
                   height: constraints.maxHeight - 30,
                   width: (constraints.maxHeight - 40) * 3 / 4,
-                  margin: EdgeInsets.only(right: 20),
+                  margin: const EdgeInsets.only(right: 20),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -136,7 +167,7 @@ class UserProductWidget extends StatelessWidget {
                   children: [
                     Text(
                       e.title,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 20,
                           fontFamily: AppStyle.defaultText,
                           fontWeight: FontWeight.w600),
@@ -169,33 +200,39 @@ class UserProductWidget extends StatelessWidget {
                 IconButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed(
-                          EditByUserProductScreen.routeName,
-                          arguments: e.id,);
+                        EditByUserProductScreen.routeName,
+                        arguments: e.id,
+                      );
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.edit,
                       color: Colors.black,
                     )),
                 if (constraints.maxWidth > 326)
                   Text(
                     "\$${e.price}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: AppStyle.defaultText,
                     ),
                   ),
                 IconButton(
                     onPressed: () async {
-                      try{
-                        await Provider.of<ProductsProvider>(context,listen:  false).deleteProduct(e.id);
-                      }catch(error){
+                      try {
+                        await Provider.of<ProductsProvider>(context,
+                                listen: false)
+                            .deleteProduct(e.id);
+                      } catch (error) {
                         scaffold.showSnackBar(
-                          SnackBar(
-                            content: Text("Couldn't delete the item",textAlign: TextAlign.center,),
+                          const SnackBar(
+                            content: Text(
+                              "Couldn't delete the item",
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         );
                       }
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.delete,
                       color: Colors.red,
                     )),
